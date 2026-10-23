@@ -34,7 +34,8 @@ class neural_network:
 def main():
     test_neuron()
     test_hidden_layer()
-    print("fuck u")
+    test_neural_network()
+    print("all tests work")
 """
     inputs = np.array([1, 2, 5, 2, 0])
     neurons = np.array([neuron(5) for i in range(10)])
@@ -46,7 +47,33 @@ def main():
 """
 
 def test_neural_network():
-    
+    n1 = neuron(2)
+    n1.weights = np.array([1.0, 2.0])
+
+    n2 = neuron(2)
+    n2.weights = np.array([-1.0, 1.0])
+
+    n3 = neuron(2)
+    n3.weights = np.array([2.0, 3.0])
+
+    layer1 = hidden_layer([n1, n2])
+    layer2 = hidden_layer([n3])
+    nn = neural_network([layer1, layer2])
+
+    inputs = np.array([2.0, 3.0])
+
+    # Layer 1: [max(2 + 6, 0), max(-2 + 3, 0)] = [8, 1]
+    # Layer 2: [max(2*8 + 3*1, 0)] = [19]
+    expected = np.array([19.0])
+    actual = nn.forward(inputs)
+
+    assert actual.shape == expected.shape, (
+        f"Expected shape {expected.shape}, got {actual.shape}"
+    )
+    assert np.allclose(actual, expected), (
+        f"Expected {expected}, got {actual}"
+    )
+
 
 def test_hidden_layer():
     inputs = np.array([1, 2])
@@ -60,7 +87,7 @@ def test_hidden_layer():
 
 
     actual = layer1.forward(inputs).sum()
-    expected = 13.0  # 2*1 + 3*2
+    expected = 13.0
 
     assert np.isclose(actual, expected), f"Expected {expected}, got {actual}"
 
